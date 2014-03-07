@@ -85,10 +85,10 @@ class AptDataParser():
 
 if __name__ == '__main__':
 	parser = AptDataParser()
-	csvfile = open('apartment_data_coord.csv', 'wb+')
+	csvfile = open('apartment_data_coord_1.csv', 'wb+')
 	wr = csv.writer(csvfile, delimiter='#', quoting=csv.QUOTE_NONNUMERIC)
 	i = 0
-	for i in xrange(1,30):
+	for i in xrange(1,60):
 		print i
 		soup = BS(''.join(parser.get_html_page("http://domchel.ru/realty/lease/residential/secondary/#" + str(i) + ".php%order=DateUpdate&dir=desc&PriceUnit=1&AreaUnit=1&expand=0&PriceUnit=1")))
 		parser.get_data('even', soup)
