@@ -14,9 +14,9 @@ $(function(){
     });
 
     $("#kindergarten-slider").noUiSlider({
-       range: [50, 1000],
-       start: 50,
-       step: 50,
+       range: [100, 1000],
+       start: 100,
+       step: 100,
        connect: "lower",
        handles: 1,
        serialization: {
