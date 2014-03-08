@@ -1,6 +1,9 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
-    padding-top: 50px;
+}
+
+.navbar {
+    margin-bottom: 0;
 }
 
 .filter-form {
@@ -9,18 +12,30 @@ body {
     padding: 50px 0;
 }
 
-#price-slider {
-    display: inline-block;
+#price-slider, #kindergarten-slider {
     width: 300px;
     margin-top: 5px;
 }
 
-#price-from, #price-to {
-    display: inline-block;
-    width: 50px;
+.price-to-container, .kindergarten-to-container {
+    margin-top: 5px;
+}
+
+#price-to, #kindergarten-to {
     font-weight: bold;
 }
 
-#price-to {
-    margin-left: 20px;
+.apartment-grid {
+    padding: 50px 0;
+    background-color: #1ABC9C;
+}
+
+.panel-title {
+    font-size: 20px;
+}
+
+.footer {
+    background-color: #2F2F2F;
+    color: #E4E6E5;
+    padding: 30px 0 20px;
 }

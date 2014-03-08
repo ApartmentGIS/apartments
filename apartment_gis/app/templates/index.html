@@ -11,29 +11,13 @@
 
 {% block js %}
 <script src="{% static "js/jquery.nouislider.min.js" %}"></script>
-<script>
-    $(function(){
-       $("#price-slider").noUiSlider({
-           range: [5000, 15000],
-           start: [5000, 15000],
-           step: 500,
-           connect: true,
-           serialization: {
-               resolution: 1,
-               to: [
-                   [$('#price-from'), 'html'],
-                   [$('#price-to'), 'html']
-               ]
-            }
-        });
-    });
-</script>
+<script src="{% static "js/main.js" %}"></script>
 {%  endblock %}
 
 {% block content %}
 <div class="filter-form">
     <div class="container">
-        <h3>Поиск жилья</h3>
+        <h2>Поиск жилья</h2>
         <form role="form">
             <div class="form-group">
                 <label>Район</label>
@@ -90,16 +74,78 @@
             </div>
             <div class="form-group">
                 <label>Цена за месяц</label>
-                <div class="price-slider-container">
-                    <div id="price-from"></div>
-                    <div id="price-slider"></div>
-                    <div id="price-to"></div>
+                <div id="price-slider"></div>
+                <p class="price-to-container">в пределах <span id="price-to"></span> рублей</p>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="kindergarten-check"> Детский сад
+                    </label>
                 </div>
+                <div id="kindergarten-slider" disabled></div>
+                <p class="kindergarten-to-container">в радиусе <span id="kindergarten-to"></span> метров</p>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Найти</button>
             </div>
         </form>
+    </div>
+</div>
+
+<div class="apartment-grid">
+    <div class="container">
+        <h2 style="color: #E4E6E5;">Результаты поиска</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Коммуны ул., д. 80</h3>
+                    </div>
+                    <div class="panel-body">
+                        <dl class="dl-horizontal">
+                            <dt>Район</dt>
+                            <dd>Ленинский</dd>
+                            <dt>Комнат</dt>
+                            <dd>3</dd>
+                            <dt>Цена за месяц</dt>
+                            <dd>15 000</dd>
+                            <dt>Этаж</dt>
+                            <dd>5 из 10</dd>
+                            <dt>Контактный телефон</dt>
+                            <dd>8 (963) 471-53-54</dd>
+                        </dl>
+                        <p>
+                            <strong>Описание: </strong>лоджия, железная дверь, мебель, автостоянка, парковка, лифт, детская площадка, близость остановки Сдаю на длительный срок. Есть мебель не новая, плита, холодильник. Электроэнергия и вода оплачиваются дополнительно,залог 15 000
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Коммуны ул., д. 80</h3>
+                    </div>
+                    <div class="panel-body">
+                        <dl class="dl-horizontal">
+                            <dt>Район</dt>
+                            <dd>Ленинский</dd>
+                            <dt>Комнат</dt>
+                            <dd>3</dd>
+                            <dt>Цена за месяц</dt>
+                            <dd>15 000</dd>
+                            <dt>Этаж</dt>
+                            <dd>5 из 10</dd>
+                            <dt>Контактный телефон</dt>
+                            <dd>8 (963) 471-53-54</dd>
+                        </dl>
+                        <p>
+                            <strong>Описание: </strong>лоджия, железная дверь, мебель, автостоянка, парковка, лифт, детская площадка, близость остановки Сдаю на длительный срок. Есть мебель не новая, плита, холодильник. Электроэнергия и вода оплачиваются дополнительно,залог 15 000
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
