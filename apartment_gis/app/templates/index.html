@@ -1,11 +1,151 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block title  %}
 Главная
 {% endblock %}
 
+{% block css %}
+<link href="{% static "css/jquery.nouislider.min.css" %}" rel="stylesheet">
+{%  endblock %}
+
+{% block js %}
+<script src="{% static "js/jquery.nouislider.min.js" %}"></script>
+<script src="{% static "js/main.js" %}"></script>
+{%  endblock %}
+
 {% block content %}
-<div class="jumbotron">
-    <h3>Фильтры</h3>
+<div class="filter-form">
+    <div class="container">
+        <h2>Поиск жилья</h2>
+        <form role="form">
+            <div class="form-group">
+                <label>Район</label>
+                <div>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Все
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Металлургический
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Курчатовский
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Калининский
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Тракторозаводский
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Центральный
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Советский
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Ленинский
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Количество комнат</label>
+                <div>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Все
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> 1
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> 2
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> 3
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> 4
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Цена за месяц</label>
+                <div id="price-slider"></div>
+                <p class="price-to-container">в пределах <span id="price-to"></span> рублей</p>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="kindergarten-check"> Детский сад
+                    </label>
+                </div>
+                <div id="kindergarten-slider" disabled></div>
+                <p class="kindergarten-to-container">в радиусе <span id="kindergarten-to"></span> метров</p>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Найти</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="apartment-grid">
+    <div class="container">
+        <h2 style="color: #E4E6E5;">Результаты поиска</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Коммуны ул., д. 80</h3>
+                    </div>
+                    <div class="panel-body">
+                        <dl class="dl-horizontal">
+                            <dt>Район</dt>
+                            <dd>Ленинский</dd>
+                            <dt>Комнат</dt>
+                            <dd>3</dd>
+                            <dt>Цена за месяц</dt>
+                            <dd>15 000</dd>
+                            <dt>Этаж</dt>
+                            <dd>5 из 10</dd>
+                            <dt>Контактный телефон</dt>
+                            <dd>8 (963) 471-53-54</dd>
+                        </dl>
+                        <p>
+                            <strong>Описание: </strong>лоджия, железная дверь, мебель, автостоянка, парковка, лифт, детская площадка, близость остановки Сдаю на длительный срок. Есть мебель не новая, плита, холодильник. Электроэнергия и вода оплачиваются дополнительно,залог 15 000
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Коммуны ул., д. 80</h3>
+                    </div>
+                    <div class="panel-body">
+                        <dl class="dl-horizontal">
+                            <dt>Район</dt>
+                            <dd>Ленинский</dd>
+                            <dt>Комнат</dt>
+                            <dd>3</dd>
+                            <dt>Цена за месяц</dt>
+                            <dd>15 000</dd>
+                            <dt>Этаж</dt>
+                            <dd>5 из 10</dd>
+                            <dt>Контактный телефон</dt>
+                            <dd>8 (963) 471-53-54</dd>
+                        </dl>
+                        <p>
+                            <strong>Описание: </strong>лоджия, железная дверь, мебель, автостоянка, парковка, лифт, детская площадка, близость остановки Сдаю на длительный срок. Есть мебель не новая, плита, холодильник. Электроэнергия и вода оплачиваются дополнительно,залог 15 000
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
