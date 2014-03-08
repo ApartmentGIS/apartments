@@ -1,11 +1,105 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block title  %}
 Главная
 {% endblock %}
 
+{% block css %}
+<link href="{% static "css/jquery.nouislider.min.css" %}" rel="stylesheet">
+{%  endblock %}
+
+{% block js %}
+<script src="{% static "js/jquery.nouislider.min.js" %}"></script>
+<script>
+    $(function(){
+       $("#price-slider").noUiSlider({
+           range: [5000, 15000],
+           start: [5000, 15000],
+           step: 500,
+           connect: true,
+           serialization: {
+               resolution: 1,
+               to: [
+                   [$('#price-from'), 'html'],
+                   [$('#price-to'), 'html']
+               ]
+            }
+        });
+    });
+</script>
+{%  endblock %}
+
 {% block content %}
-<div class="jumbotron">
-    <h3>Фильтры</h3>
+<div class="filter-form">
+    <div class="container">
+        <h3>Поиск жилья</h3>
+        <form role="form">
+            <div class="form-group">
+                <label>Район</label>
+                <div>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Все
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Металлургический
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Курчатовский
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Калининский
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Тракторозаводский
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Центральный
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Советский
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Ленинский
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Количество комнат</label>
+                <div>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="checkbox"> Все
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> 1
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> 2
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> 3
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="checkbox"> 4
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Цена за месяц</label>
+                <div class="price-slider-container">
+                    <div id="price-from"></div>
+                    <div id="price-slider"></div>
+                    <div id="price-to"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Найти</button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

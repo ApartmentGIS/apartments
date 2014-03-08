@@ -1,3 +1,26 @@
 body {
-    padding-top: 70px;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-top: 50px;
+}
+
+.filter-form {
+    background-color: #34495E;
+    color: #E4E6E5;
+    padding: 50px 0;
+}
+
+#price-slider {
+    display: inline-block;
+    width: 300px;
+    margin-top: 5px;
+}
+
+#price-from, #price-to {
+    display: inline-block;
+    width: 50px;
+    font-weight: bold;
+}
+
+#price-to {
+    margin-left: 20px;
 }
