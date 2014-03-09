@@ -1,0 +1,33 @@
+{% if attrs.checkbox %}
+<div class="checkbox">
+    <label>
+        <input type="checkbox" id="kindergarten-check"> Детский сад
+    </label>
+</div>
+{% endif %}
+<div id="{{ attrs.id }}-slider"></div>
+<p class="{{ attrs.id }}-container">в пределах <span id="{{ attrs.id }}-to"></span> {{ attrs.measure }}</p>
+<input type="hidden" name="{{ name }}" id="{{ attrs.id }}-invisible" value="{{ value }}">
+
+<script>
+    $(function(){
+        $("#{{ attrs.id }}-slider").noUiSlider({
+            range: [{{ attrs.min }}, {{ attrs.max }}],
+            start: {% if value %}{{ value }}{% else %}{{ attrs.min }}{% endif %},
+            step: {{ attrs.step }},
+            connect: "lower",
+            handles: 1,
+            serialization: {
+                resolution: 1,
+                to: [
+                    [$("#{{ attrs.id }}-to"), "html"]
+                ]
+            },
+            slide: function(){
+                var amount = $(this).val();
+                $("#{{ attrs.id }}-invisible").val(amount);
+                $("#{{ attrs.id }}-to").html(amount);
+            }
+        });
+    });
+</script>

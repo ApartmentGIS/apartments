@@ -12,16 +12,16 @@ body {
     padding: 50px 0;
 }
 
-#price-slider, #kindergarten-slider {
+#price-max-slider, #kindergarten-slider {
     width: 300px;
     margin-top: 5px;
 }
 
-.price-to-container, .kindergarten-to-container {
+.price-max-container, .kindergarten-container {
     margin-top: 5px;
 }
 
-#price-to, #kindergarten-to {
+#price-max, #kindergarten-to {
     font-weight: bold;
 }
 

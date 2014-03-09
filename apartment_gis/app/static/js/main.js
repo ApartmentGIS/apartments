@@ -1,44 +1,33 @@
 $(function(){
-    $("#price-slider").noUiSlider({
-       range: [3000, 15000],
-       start: 3000,
-       step: 500,
-       connect: "lower",
-       handles: 1,
-       serialization: {
-           resolution: 1,
-           to: [
-               [$('#price-to'), 'html']
-           ]
+//    function checkDisabledKindergartenSlider(){
+//        if($("#kindergarten-check").is(":checked"))
+//            $("#kindergarten-slider").removeAttr("disabled");
+//        else
+//            $("#kindergarten-slider").attr("disabled", "true");
+//    };
+//
+//    checkDisabledKindergartenSlider();
+//
+//    $("#kindergarten-check").on("change", function(){
+//        checkDisabledKindergartenSlider();
+//    });
+
+    $("#id_district_1, #id_rooms_num_1").on("change", function(){
+        var self = $(this),
+            btnGroup = self.closest(".btn-group");
+
+        if(self.is(":checked")){
+            btnGroup.find(".active").removeClass("active").find("input").removeAttr("checked");
         }
     });
 
-    $("#kindergarten-slider").noUiSlider({
-       range: [100, 1000],
-       start: 100,
-       step: 100,
-       connect: "lower",
-       handles: 1,
-       serialization: {
-           resolution: 1,
-           to: [
-               [$('#kindergarten-to'), 'html']
-           ]
-        }
-    });
+    $(".districts, .rooms_nums").find("input:not(#id_district_1, #id_rooms_num_1)").on("change", function(){
+        var self = $(this),
+            btnGroup = self.closest(".btn-group");
 
-    var checkDisabledKindergartenSlider = function(){
-        if($("#kindergarten-check").is(":checked"))
-            $("#kindergarten-slider").removeAttr("disabled");
-        else
-            $("#kindergarten-slider").attr("disabled", "true");
-    };
-
-    checkDisabledKindergartenSlider();
-
-    $("#kindergarten-check").change(function(){
-        checkDisabledKindergartenSlider();
-    });
-
+        if(self.is(":checked")){
+            btnGroup.find("label").eq(0).removeClass("active").find("input").removeAttr("checked");
+        };
+    })
 
 });

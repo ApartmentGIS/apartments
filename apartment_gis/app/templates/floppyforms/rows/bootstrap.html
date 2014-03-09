@@ -1,0 +1,25 @@
+{% load floppyforms %}{% block row %}{% for field in fields %}
+<div class="form-group{% if field.errors %} error{% endif %}">
+    {% with classes=field.css_classes label=label|default:field.label help_text=help_text|default:field.help_text %}
+    {% block label %}
+        {% if checkbox %}<div class="checkbox">{% endif %}
+        {% if field|id %}
+            <label for="{{ field|id }}">{% endif %}{{ label }}{% if field|id %}
+            {% if checkbox %}<input type="checkbox" id="kindergarten-check">{% endif %}
+            </label>
+        {% endif %}
+        {% if checkbox %}</div>{% endif %}
+    {% endblock %}
+    {% block field %}
+{#        <div>#}
+            {% block widget %}{% formfield field %}{% endblock %}
+            {% block errors %}{% include "floppyforms/errors.html" with errors=field.errors %}{% endblock %}
+            {% block help_text %}{% if field.help_text %}
+                <p class="help-block">{{ field.help_text }}</p>
+            {% endif %}{% endblock %}
+            {% block hidden_fields %}{% for field in hidden_fields %}{{ field.as_hidden }}{% endfor %}{% endblock %}
+{#        </div><!--- .controls -->#}
+    {% endblock %}
+    {% endwith %}
+</div><!--- .control-group{% if field.errors %}.error{% endif %} -->
+{% endfor %}{% endblock %}

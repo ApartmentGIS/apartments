@@ -1,5 +1,4 @@
 from django.contrib.gis.db import models
-from django.contrib import admin
 
 class Apartment(models.Model):
     address = models.CharField(max_length=200)
@@ -17,4 +16,4 @@ class Apartment(models.Model):
         return self.address
 
     class Meta:
-        unique_together = ('address', 'rooms_num', 'month_price', 'floor',)
+        unique_together = ('address', 'rooms_num', 'month_price', 'floor')

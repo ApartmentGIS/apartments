@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load floppyforms %}
 
 {% block title  %}
 Главная
@@ -18,75 +19,8 @@
 <div class="filter-form">
     <div class="container">
         <h2>Поиск жилья</h2>
-        {{ form }}
-        <form role="form" action="/filter/" method="get">
-            <div class="form-group">
-                <label>Район</label>
-                <div>
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default">
-                            <input type="checkbox"> Все
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> Металлургический
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> Курчатовский
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> Калининский
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> Тракторозаводский
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> Центральный
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> Советский
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> Ленинский
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Количество комнат</label>
-                <div>
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default">
-                            <input type="checkbox"> Все
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> 1
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> 2
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> 3
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="checkbox"> 4
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Цена за месяц</label>
-                <div id="price-slider"></div>
-                <p class="price-to-container">в пределах <span id="price-to"></span> рублей</p>
-            </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" id="kindergarten-check"> Детский сад
-                    </label>
-                </div>
-                <div id="kindergarten-slider" disabled></div>
-                <p class="kindergarten-to-container">в радиусе <span id="kindergarten-to"></span> метров</p>
-            </div>
+        <form role="form" action="." method="get">{% csrf_token %}
+            {% form filter_form using "floppyforms/layouts/bootstrap.html" %}
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Найти</button>
             </div>
@@ -137,5 +71,6 @@
             К сожалению, подходящих квартир нет...
         {% endfor %}
     </div>
+</div>
 </div>
 {% endblock %}
