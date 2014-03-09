@@ -14,9 +14,9 @@ class Apartment(models.Model):
     objects = models.GeoManager()
 
     class Meta:
-        unique_together = ('address', 'rooms_num', 'month_price', 'floor',)
+        unique_together = ('address', 'rooms_num', 'month_price', 'floor')
 
-	def __unicode__(self):
+    def __unicode__(self):
         return self.address
 
 class NurserySchool(models.Model):
