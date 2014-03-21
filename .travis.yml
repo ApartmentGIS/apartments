@@ -3,14 +3,14 @@ language: python
 python:
     - "2.7"
 
-env:
-    - DJANGO=1.6.2 DJANGO_SETTINGS_MODULE="apartment_gis.settings"
+before_install:
+    - ln -s apartment_gis/apartment_gis/settings.py.production apartment_gis/apartment_gis/settings.py
+    - printf ls la
 
 install:
     - pip install -r apartment_gis/configs/requirements.txt
 
 before_script:
-    - ln -s apartment_gis/apartment_gis/settings.py.production apartment_gis/apartment_gis/settings.py
     - python apartment_gis/manage.py syncdb --noinput
 
 script:
