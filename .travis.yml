@@ -4,8 +4,7 @@ python:
     - "2.7"
 
 before_install:
-    - ln -s apartment_gis/apartment_gis/settings.py.production apartment_gis/apartment_gis/settings.py
-    - printf ls la
+    - ln -s apartment_gis/apartment_gis/settings.py.local apartment_gis/apartment_gis/settings.py
 
 install:
     - pip install -r apartment_gis/configs/requirements.txt
