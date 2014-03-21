@@ -4,13 +4,18 @@ python:
     - "2.7"
 
 before_install:
-    - ln -s apartment_gis/apartment_gis/settings.py.local apartment_gis/apartment_gis/settings.py
+    - cd apartment_gis
+    - cp apartment_gis/settings.py.local apartment_gis/settings.py
 
 install:
-    - pip install -r apartment_gis/configs/requirements.txt
+    - pip install -r configs/requirements.txt
+
+    - psql -c 'create database test_gis;' -U postgres
+    - psql -c 'create extension postgis;' -U postgres -d test_gis
+    - psql -c 'create extension postgis_topology;' -u postgres -d test_gis
 
 before_script:
-    - python apartment_gis/manage.py syncdb --noinput
+    - python manage.py syncdb --noinput
 
 script:
     - python apartment_gis/manage.py test
