@@ -4,10 +4,10 @@ python:
     - "2.7"
 
 install:
-    - pip install -r requirements.txt
+    - pip install -r apartment_gis/configs/requirements.txt
 
 before_script:
-    - python manage.py syncdb --noinput
+    - python apartment_gis/manage.py syncdb --noinput
 
 script:
-    - python manage.py test
+    - python apartment_gis/manage.py test
