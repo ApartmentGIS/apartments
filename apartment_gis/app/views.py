@@ -47,7 +47,6 @@ def home(request):
 		rooms = []
 		for r in filter['rooms_num']:
 			if r == '1' or r == '2':
-				print 'RRRRRRRRRRRRRRRRrrr %s' % r
 				rooms.append(Q(rooms_num=r))
 			elif r == 'big':
 				rooms.append(Q(rooms_num__gte=3))
