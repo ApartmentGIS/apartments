@@ -3,6 +3,9 @@ language: python
 python:
     - "2.7"
 
+env:
+    - DJANGO=1.6.2 DJANGO_SETTINGS_MODULE="apartment_gis.settings"
+
 install:
     - pip install -r apartment_gis/configs/requirements.txt
 
