@@ -13,64 +13,76 @@
 {% block js %}
 <script src="{% static "js/jquery.nouislider.min.js" %}"></script>
 <script src="{% static "js/main.js" %}"></script>
+<script src="http://maps.api.2gis.ru/1.0"></script>
+<script src="{% static "js/map-controller.js" %}"></script>
 {%  endblock %}
 
 {% block content %}
+<div class="toggle-filter-form">
+    <a>Свернуть фильтр <i class="glyphicon glyphicon-resize-small"></i></a>
+</div>
+
 <div class="filter-form">
-    <div class="container">
-        <h2>Поиск жилья</h2>
-        <form role="form" action="." method="get">{% csrf_token %}
-            {% form filter_form using "floppyforms/layouts/bootstrap.html" %}
-            <div class="form-group">
-                <button type="submit" class="btn btn-success">Найти</button>
-            </div>
-        </form>
+    <h2>Поиск жилья</h2>
+    <form role="form" action="." method="get">{% csrf_token %}
+        {% form filter_form using "floppyforms/layouts/bootstrap.html" %}
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Найти</button>
+        </div>
+    </form>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 map">
+            <div id="map"></div>
+        </div>
     </div>
 </div>
 
-<div class="apartment-grid">
-    <div class="container">
-        <h2 style="color: #E4E6E5;">Найдено квартир ({{ apartment_list|length }})</h2>
-        {% for apartment in apartment_list %}
-        {% if forloop.counter0|divisibleby:2 %}
-        <div class="row">
-        {% endif %}
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{{ apartment.address }}</h3>
-                    </div>
-                    <div class="panel-body">
-                        <dl class="dl-horizontal">
-                            <dt>Район</dt>
-                            <dd>{{ apartment.district }}</dd>
-                            <dt>Комнат</dt>
-                            <dd>{{ apartment.rooms_num }}</dd>
-                            <dt>Цена за месяц</dt>
-                            <dd>{{ apartment.month_price }}</dd>
-                            <dt>Этаж</dt>
-                            <dd>{{ apartment.floor }} из {{ apartment.storeys_num }}</dd>
-                            <dt>Контактный телефон</dt>
-                            <dd>{{ apartment.phone_number }}</dd>
-                        </dl>
-                        <p>
-                            <strong>Описание: </strong>
-                            {% if apartment.description == "None" %}
-                                -
-                            {% else %}
-                                {{ apartment.description|default_if_none:"nothing" }}
-                            {% endif%}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        {% if forloop.counter|divisibleby:2 %}
-        </div>
-        {% endif %}
-        {% empty %}
-            К сожалению, подходящих квартир нет...
-        {% endfor %}
-    </div>
-</div>
+{#<div class="apartment-grid">#}
+{#    <div class="container">#}
+{#        <h2 style="color: #E4E6E5;">Найдено квартир ({{ apartment_list|length }})</h2>#}
+{#        {% for apartment in apartment_list %}#}
+{#        {% if forloop.counter0|divisibleby:2 %}#}
+{#        <div class="row">#}
+{#        {% endif %}#}
+{#            <div class="col-md-6">#}
+{#                <div class="panel panel-default">#}
+{#                    <div class="panel-heading">#}
+{#                        <h3 class="panel-title">{{ apartment.address }}</h3>#}
+{#                    </div>#}
+{#                    <div class="panel-body">#}
+{#                        <dl class="dl-horizontal">#}
+{#                            <dt>Район</dt>#}
+{#                            <dd>{{ apartment.district }}</dd>#}
+{#                            <dt>Комнат</dt>#}
+{#                            <dd>{{ apartment.rooms_num }}</dd>#}
+{#                            <dt>Цена за месяц</dt>#}
+{#                            <dd>{{ apartment.month_price }}</dd>#}
+{#                            <dt>Этаж</dt>#}
+{#                            <dd>{{ apartment.floor }} из {{ apartment.storeys_num }}</dd>#}
+{#                            <dt>Контактный телефон</dt>#}
+{#                            <dd>{{ apartment.phone_number }}</dd>#}
+{#                        </dl>#}
+{#                        <p>#}
+{#                            <strong>Описание: </strong>#}
+{#                            {% if apartment.description == "None" %}#}
+{#                                -#}
+{#                            {% else %}#}
+{#                                {{ apartment.description|default_if_none:"nothing" }}#}
+{#                            {% endif%}#}
+{#                        </p>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% if forloop.counter|divisibleby:2 %}#}
+{#        </div>#}
+{#        {% endif %}#}
+{#        {% empty %}#}
+{#            К сожалению, подходящих квартир нет...#}
+{#        {% endfor %}#}
+{#    </div>#}
+{#</div>#}
 </div>
 {% endblock %}
