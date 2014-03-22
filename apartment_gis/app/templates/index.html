@@ -15,6 +15,42 @@
 <script src="{% static "js/main.js" %}"></script>
 <script src="http://maps.api.2gis.ru/1.0"></script>
 <script src="{% static "js/map-controller.js" %}"></script>
+<script>
+    DG.autoload(function(){
+        var chelCoord = [61.400856, 55.160283],
+            zoom = 12;
+
+        var chellMap = mapClass.create("map", chelCoord, zoom),
+            apartments = [
+                {% for apartment in apartment_list %}
+                {
+                    coords: [{{ apartment.location.x }}, {{ apartment.location.y }}],
+                    text: '<dl class="dl-horizontal">' +
+                            '<dt>Район</dt>' +
+                            '<dd>{{ apartment.district }}</dd>' +
+                            '<dt>Комнат</dt>' +
+                            '<dd>{{ apartment.rooms_num }}</dd>' +
+                            '<dt>Цена за месяц</dt>' +
+                            '<dd>{{ apartment.month_price }}</dd>' +
+                            '<dt>Этаж</dt>' +
+                            '<dd>{{ apartment.floor }} из {{ apartment.storeys_num }}</dd>' +
+                            '<dt>Контактный телефон</dt>' +
+                            '<dd>{{ apartment.phone_number }}</dd>' +
+                          '</dl>'
+                },
+                {% endfor %}
+            ],
+            balloon,
+            markers = [];
+
+        for(var i = 0; i < apartments.length; i++){
+            balloon = balloonClass.create(apartments[i].coords, apartments[i].text);
+            markers.push(markerClass.create(chellMap.map, apartments[i].coords, balloon));
+        };
+
+        chellMap.addMarkers(markers);
+    });
+</script>
 {%  endblock %}
 
 {% block content %}
