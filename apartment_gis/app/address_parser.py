@@ -34,11 +34,10 @@ class AptDataParser():
         return location
 
     def get_address(self, apt_info):
-        address = apt_info.a.b.string
-        return address
+        return smart_str(apt_info.a.b.string)
 
     def get_district(self, apt_info):
-        return apt_info.div.string
+        return smart_str(apt_info.div.string)
 
     def get_price(self, basic_params):
         return int(basic_params[0].string.split()[0] + basic_params[0].string.split()[1])
@@ -49,14 +48,18 @@ class AptDataParser():
         else:
             return int(basic_params[2].string.split('-')[0])
 
+    def get_floor_num(self, basic_params):
+        return int(basic_params[3].string.split('/')[0])
+
+    def get_storeys_num(self, basic_params):
+        return int(basic_params[3].string.split('/')[1])
+
     def get_description(self, details_soup):
-        #print type(details_soup)
         description = details_soup.findAll('ul', {'class': 'review_right'})
         if len(description) == 1 or len(description) == 0:
             return None
         else:
-            #print description[1].li.contents[0].replace('\t', '')
-            return description[1].li.contents[0].replace('\t', '')
+            return description[1].li.contents[0].strip(' \t\n\r')
 
     def get_phone(self, details_soup):
         phone_number = details_soup.findAll('div', {'class': 'rl_info'})
@@ -89,12 +92,12 @@ class AptDataParser():
 
             district = self.get_district(apt)
             price = self.get_price(basic_params)
-            floor = int(basic_params[3].string.split('/')[0])
-            storeys_num = int(basic_params[3].string.split('/')[1])
+            floor = self.get_floor_num(basic_params)
+            storeys_num = self.get_storeys_num(basic_params)
             description = self.get_description(details_soup)
             location = self.get_location(address)
             print address
-            self.apt_parameters_list.append([smart_str(address), smart_str(district), rooms_num, price, floor, storeys_num, smart_str(description), phone, location])
+            self.apt_parameters_list.append([address, district, rooms_num, price, floor, storeys_num, smart_str(description), phone, location])
 
     def get_apartments_list(self):
         return self.apt_parameters_list
@@ -103,6 +106,7 @@ class AptDataParser():
         csvfile = open(filename, 'wb+')
         wr = csv.writer(csvfile, delimiter='#', quoting=csv.QUOTE_NONNUMERIC)
         for data_item in data_list:
+            print data_item
             wr.writerow(data_item)
         csvfile.close()
 
@@ -111,7 +115,6 @@ class AptDataParser():
                 soup = BS(''.join(self.get_html_page("http://domchel.ru/realty/lease/residential/secondary/#" + str(i) + ".php%order=DateUpdate&dir=desc&PriceUnit=1&AreaUnit=1&expand=0&PriceUnit=1")))
                 self.parse_apt_data('even', soup)
                 self.parse_apt_data('odd', soup)
-                #time.sleep(15)
 
 class NurserySchoolDataParser(AptDataParser):
     def __init__(self):
@@ -151,7 +154,7 @@ if __name__ == '__main__':
             apartments_list = apt_parser.get_apartments_list()
             print "\nTotal Number of Added Apartments: %s" % len(apartments_list)
             apt_parser.write_in(args['apt_filename'], apartments_list)
-    elif(args['school_filename']):
+    elif args['school_filename']:
         school_parser = NurserySchoolDataParser()
         data_list = school_parser.get_school_data()
         print "\n Total Number of Added Nursery Schools: %s" % len(school_parser.school_parameters_list)
