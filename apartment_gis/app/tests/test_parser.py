@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 import nose.tools as nt
 from django.utils.encoding import smart_str
-from app.address_parser import AptDataParser
+from app.address_parser import AptDataParser, OrganizationDataParser
 import os
 from bs4 import BeautifulSoup as BS
 import csv
 import subprocess
+import time
+import json
 from mock import Mock
 
 class TestParams(object):
     def __init__(self):
         self.filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../address_parser.py')
+        self.ODP = OrganizationDataParser
 
     def test_no_input_params(self):
         p = subprocess.Popen(['python', self.filepath], stdout=subprocess.PIPE)
@@ -27,25 +30,49 @@ class TestParams(object):
         p.communicate()
         nt.assert_true(p.returncode == 1)
 
-    def test_correct_input(self):
-        subprocess.Popen(['python', self.filepath, '--apt_filename', 'test_params.csv', '--pages_number', '1'], stdout=subprocess.PIPE)
-        target_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../test_params.csv')
-        nt.assert_false(os.path.exists(target_filename))
+    def test_correct_apt_data_input(self):
+        subprocess.Popen(['python', self.filepath, '--apt_filename', 'app/tests/test_params.csv', '--pages_number', '1'], stdout=subprocess.PIPE)
+        time.sleep(5)
+        target_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_params.csv')
+        nt.assert_true(os.path.exists(target_filename))
+        os.remove(target_filename)
+
+    def test_correct_org_data_input(self):
+        p = subprocess.Popen(['python', self.filepath, '--org_filename', 'app/tests/test_params.csv'], stdout=subprocess.PIPE)
+        target_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_params.csv')
+        time.sleep(10)
+        p.communicate()
+        nt.assert_true(p.returncode == 0)
+        # nt.assert_true(os.path.exists(target_filename))
+        os.remove(target_filename)
 
 
 class TestHtmlResponse(object):
-    def test_html_response(self):
-        pass
+    def __init__(self):
+        self.ODP = OrganizationDataParser()
+        self.target_org = 'Торгово-развлекательные центры / Моллы'
+
+    def test_getting_org_url(self):
+        expected_url = 'http://catalog.api.2gis.ru/searchinrubric?what=Торгово-развлекательные центры / Моллы&' \
+                       'where=челябинск&page=1&pagesize=50&sort=relevance&key=ruedcr5592&version=1.3&lang=ru&' \
+                       'output=json&limit=2000'
+        nt.assert_equal(self.ODP.get_org_url(self.target_org, 1), expected_url)
+
+    def test_getting_total_org_num(self):
+        expected_num = 9
+        nt.assert_equal(self.ODP.get_total_num(self.target_org), expected_num)
 
 
 class TestParser(object):
     def __init__(self):
         self.ADP = AptDataParser()
+        self.ODP = OrganizationDataParser()
         self.address = 'Ленина пр-кт, д. 34'
         self.details_correct_file = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'details_correct_fixtures.html'), 'rb')
         self.details_incorrect_file = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'details_incorrect_fixtures.html'), 'rb')
         self.apt_fixtures = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'apartments_fixtures.html'), 'rb')
         self.apt_fixtures_no_room = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'apartments_fixtures_no_room.html'), 'rb')
+        self.kindergarden_fixtures = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'kindergarden_test_data.json'), 'rb')
 
     def test_adding_new_address(self):
         nt.assert_false(self.ADP.is_already_added(self.address))
@@ -120,11 +147,14 @@ class TestParser(object):
         expected_storeys_num = 9
         nt.assert_equal(self.ADP.get_storeys_num(basic_info), expected_storeys_num)
 
-    # def test_getting_apartments_list(self):
-    #     soup_fixtures = BS(self.apt_fixtures.read())
-    #     self.ADP.parse_apt_data('even', soup_fixtures)
-    #     apt_list = self.ADP.get_apartments_list()
-    #     print 'LIIIIIST' % apt_list
+    # def test_parsing_kindergardens(self):
+    #     org_type = 'Детские сады / Ясли'
+    #     data = []
+    #     with open(self.kindergarden_fixtures) as f:
+    #         for line in f:
+    #             data.append(json.loads(line))
+    #     self.ODP.parse_org_data(org_type, data)
+
 
 class TestCSV(object):
     def __init__(self):

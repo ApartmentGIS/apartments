@@ -126,6 +126,8 @@ class OrganizationDataParser(AptDataParser):
             'больницы',
             'фитнес-клубы',
             'Торгово-развлекательные центры / Моллы']
+        self.max_pagesize = 50
+        self.organizations_parameters_list = []
 
     def get_org_url(self, org_name, page_num):
         url = 'http://catalog.api.2gis.ru/searchinrubric?what=' + str(org_name) + '&where=челябинск&page=' + \
@@ -138,29 +140,30 @@ class OrganizationDataParser(AptDataParser):
         total_records = data['total']
         return int(total_records)
 
+    def parse_org_data(self, org_type, org_list):
+        for organization in org_list:
+            name = organization['name']
+            address = organization['address']
+            location = organization['lon'] + ' ' + organization['lat']
+            self.organizations_parameters_list.append([smart_str(org_type),
+                                                       name.encode('utf8'),
+                                                       address.encode('utf8'),
+                                                       location.encode('utf8')])
+
     def get_organizations_data(self):
-        pagesize = 50
-        organizations_parameters_list = []
         for org_type in self.organizations_type_list:
-            print org_type
             iter = 1
-            total_records = self.get_total_num(org_type)
-            while(total_records - pagesize*iter > 0 or total_records < pagesize):
+            total_records_num = self.get_total_num(org_type)
+            while(total_records_num - self.max_pagesize*iter > 0 or total_records_num < self.max_pagesize):
                 json_response = urllib.urlopen(self.get_org_url(org_type, iter))
                 data = json.load(json_response)
                 iter += 1
                 org_list = data['result']
-                for organization in org_list:
-                    name = organization['name']
-                    address = organization['address']
-                    location = organization['lon'] + ' ' + organization['lat']
-                    organizations_parameters_list.append([smart_str(org_type),
-                                                          name.encode('utf8'),
-                                                          address.encode('utf8'),
-                                                          location.encode('utf8')])
-                if total_records < pagesize:
+                print data['result']
+                self.parse_org_data(org_type, org_list)
+                if total_records_num < self.max_pagesize:
                     break
-        return organizations_parameters_list
+        return self.organizations_parameters_list
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser(description='This program get list of apartments and schools information')
