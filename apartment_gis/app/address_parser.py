@@ -107,7 +107,6 @@ class AptDataParser():
         csvfile = open(filename, 'wb+')
         wr = csv.writer(csvfile, delimiter='#', quoting=csv.QUOTE_NONNUMERIC)
         for data_item in data_list:
-            print data_item
             wr.writerow(data_item)
         csvfile.close()
 
@@ -117,49 +116,77 @@ class AptDataParser():
                 self.parse_apt_data('even', soup)
                 self.parse_apt_data('odd', soup)
 
-class NurserySchoolDataParser(AptDataParser):
+
+class OrganizationDataParser(AptDataParser):
     def __init__(self):
-        self.school_parameters_list = []
+        self.organizations_type_list = [
+            'Детские сады / Ясли',
+            'школы',
+            'университеты',
+            'больницы',
+            'фитнес-клубы',
+            'Торгово-развлекательные центры / Моллы']
 
-    def get_school_data(self):
-        json_response = urllib.urlopen("http://maps.yandex.ru/services/search/1.x/search.json?autoscale=0&lang=ru-RU&ll=61.391702%2C55.164186&origin=maps-pager&results=261&spn=2.084656%2C0.666690&text=детские сады члеябинск&type=biz%2Cpsearch%2Cweb")
+    def get_org_url(self, org_name, page_num):
+        url = 'http://catalog.api.2gis.ru/searchinrubric?what=' + str(org_name) + '&where=челябинск&page=' + \
+              str(page_num) + '&pagesize=50&sort=relevance&key=ruedcr5592&version=1.3&lang=ru&output=json&limit=2000'
+        return url
+
+    def get_total_num(self, org_name):
+        json_response = urllib.urlopen(self.get_org_url(org_name, 1))
         data = json.load(json_response)
-        school_list = data['features']
+        total_records = data['total']
+        return int(total_records)
 
-        for school in school_list:
-            name = school['properties']['CompanyMetaData']['name']
-            print name
-            address = school['properties']['CompanyMetaData']['address']
-            print address
-            location = str(school['geometry']['coordinates'][0]) + " " + str(school['geometry']['coordinates'][1])
-            print location
-            phone = school['properties']['CompanyMetaData']['Phones'][0]['formatted']
-            print phone
-            self.school_parameters_list.append([smart_str(name), smart_str(address), phone, location])
-        return self.school_parameters_list
+    def get_organizations_data(self):
+        pagesize = 50
+        organizations_parameters_list = []
+        for org_type in self.organizations_type_list:
+            print org_type
+            iter = 1
+            total_records = self.get_total_num(org_type)
+            while(total_records - pagesize*iter > 0 or total_records < pagesize):
+                json_response = urllib.urlopen(self.get_org_url(org_type, iter))
+                data = json.load(json_response)
+                iter += 1
+                org_list = data['result']
+                for organization in org_list:
+                    name = organization['name']
+                    address = organization['address']
+                    location = organization['lon'] + ' ' + organization['lat']
+                    organizations_parameters_list.append([smart_str(org_type),
+                                                          name.encode('utf8'),
+                                                          address.encode('utf8'),
+                                                          location.encode('utf8')])
+                if total_records < pagesize:
+                    break
+        return organizations_parameters_list
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser(description='This program get list of apartments and schools information')
-    arg_parser.add_argument('-apt_filename', '--apt_filename', help="Input file name with csv extention to get apartments info. Don't forget to specify number of apartments")
-    arg_parser.add_argument('-pages_number', '--pages_number', help="Input number of web pages you would like to parse. Don't forget to specify filename for apartments information")
-    arg_parser.add_argument('-school_filename', '--school_filename', help='Input file name with csv extention to get schools info')
+    arg_parser.add_argument('-apt_filename', '--apt_filename', help="Input file name with csv extention to get apartments"
+                                                                    " info. Don't forget to specify number of apartments")
+    arg_parser.add_argument('-pages_number', '--pages_number', help="Input number of web pages you would like to parse."
+                                                                    " Don't forget to specify filename for apartments information")
+    arg_parser.add_argument('-org_filename', '--org_filename', help='Input file name with csv extention to get'
+                                                                    ' organizations info')
     args = vars(arg_parser.parse_args())
 
-    if not (args['school_filename'] or args['apt_filename'] or args['pages_number']):
+    if not (args['org_filename'] or args['apt_filename'] or args['pages_number']):
         arg_parser.print_help()
         exit(1)
 
     if args['apt_filename'] and args['pages_number']:
-            apt_parser = AptDataParser()
-            apt_parser.get_apt_data(int(args['pages_number']))
-            apartments_list = apt_parser.get_apartments_list()
-            print "\nTotal Number of Added Apartments: %s" % len(apartments_list)
-            apt_parser.write_in(args['apt_filename'], apartments_list)
-    elif args['school_filename']:
-        school_parser = NurserySchoolDataParser()
-        data_list = school_parser.get_school_data()
-        print "\n Total Number of Added Nursery Schools: %s" % len(school_parser.school_parameters_list)
-        school_parser.write_in(args['school_filename'], school_parser.school_parameters_list)
+        apt_parser = AptDataParser()
+        apt_parser.get_apt_data(int(args['pages_number']))
+        apartments_list = apt_parser.get_apartments_list()
+        print "\nTotal Number of Added Apartments: %s" % len(apartments_list)
+        apt_parser.write_in(args['apt_filename'], apartments_list)
+    elif args['org_filename']:
+        org_parser = OrganizationDataParser()
+        data_list = org_parser.get_organizations_data()
+        print "\nTotal Number of Added Organizations: %s" % len(data_list)
+        org_parser.write_in(args['org_filename'], data_list)
     else:
         print "Error: Add apt_filename or apt_number \n"
         arg_parser.print_help()
