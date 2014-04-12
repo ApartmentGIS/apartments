@@ -19,10 +19,19 @@ class Apartment(models.Model):
     def __unicode__(self):
         return self.address
 
-class NurserySchool(models.Model):
+
+class Organization(models.Model):
+    ORG_CHOICES = (
+        ('KIN', 'Kindergarten'),
+        ('SCH', 'School'),
+        ('UNI', 'University'),
+        ('HOS', 'Hospital'),
+        ('FIT', 'Fitness club'),
+        ('SHP', 'Shopping Mall'),
+    )
+    type = models.CharField(max_length=3, choices=ORG_CHOICES)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
-    phone_number = models.CharField(max_length=50)
     location = models.PointField()
     objects = models.GeoManager()
 

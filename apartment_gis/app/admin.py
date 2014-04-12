@@ -1,11 +1,11 @@
 from django.contrib import admin
-from models import Apartment, NurserySchool
+from models import Apartment, Organization
 
 class ApartmentAdmin(admin.ModelAdmin):
     list_display = ('address', 'district', 'rooms_num', 'month_price', 'floor')
 
-class NurserySchoolAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address')
+class OrganizationAdmin(admin.ModelAdmin):
+    list_display = ('type', 'name', 'address')
 
 admin.site.register(Apartment, ApartmentAdmin)
-admin.site.register(NurserySchool, NurserySchoolAdmin)
+admin.site.register(Organization, OrganizationAdmin)
