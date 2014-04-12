@@ -16,13 +16,14 @@ body {
     top: 0;
     z-index: 2000;
     height: 100%;
+    overflow-y: auto;
 }
 
 .toggle-filter-form {
     background-color: #34495E;
     position: absolute;
-    bottom: 15px;
-    left: 20px;
+    bottom: 0;
+    right: 0;
     border: 1px solid #fff;
     padding: 10px;
     cursor: pointer;
@@ -44,12 +45,16 @@ body {
     margin-top: 5px;
 }
 
-.price-max-container, .kindergarten-container {
+.price-max-container, #kindergarten-container {
     margin-top: 5px;
 }
 
 #price-max, #kindergarten-to {
     font-weight: bold;
+}
+
+.empty-label {
+    margin-bottom: 0;
 }
 
 .apartment-grid {
@@ -70,4 +75,21 @@ body {
     background-color: #2F2F2F;
     color: #E4E6E5;
     padding: 30px 0 20px;
+}
+
+.dl-horizontal dd {
+    word-wrap: break-word;
+}
+
+#apartment-detail {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    z-index: 10000;
+    background-color: #F2F2F2;
+    color: #333333;
+    box-shadow: 0 0 3px 1px #999;
+    width: 500px;
+    padding: 20px;
+    display: none;
 }

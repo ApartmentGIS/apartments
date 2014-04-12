@@ -18,9 +18,11 @@
 <script>
     DG.autoload(function(){
         var chelCoord = [61.400856, 55.160283],
-            zoom = 12;
+            currentZoom = 12,
+            minZoom = 11,
+            selectedText = "Вы выбрали эту квартиру";
 
-        var chellMap = mapClass.create("map", chelCoord, zoom),
+        var chellMap = mapClass.create("map", "selectedBalloons", chelCoord, currentZoom, minZoom),
             apartments = [
                 {% for apartment in apartment_list %}
                 {
@@ -37,16 +39,22 @@
                             '<dt>Контактный телефон</dt>' +
                             '<dd>{{ apartment.phone_number }}</dd>' +
                           '</dl>'
+                          {% if apartment.description != "None" %} + '<p class="balloon-description"><strong>Описание: </strong>{{ apartment.description }}</p>'{% endif %}
+
                 },
                 {% endfor %}
             ],
             balloon,
             markers = [];
 
+        var showApartmentDetail = function(detail){
+            $("#detail-from-balloon").html(detail).closest("#apartment-detail").show();
+        };
+
         for(var i = 0; i < apartments.length; i++){
             balloon = balloonClass.create(apartments[i].coords, apartments[i].text);
-            markers.push(markerClass.create(chellMap.map, apartments[i].coords, balloon));
-        };
+            markers.push(markerClass.create(chellMap.map, chellMap.selectedBalloonsGroupName, apartments[i].coords, balloon, selectedText, showApartmentDetail));
+        }
 
         chellMap.addMarkers(markers);
     });
@@ -55,12 +63,12 @@
 
 {% block content %}
 <div class="toggle-filter-form">
-    <a>Свернуть фильтр <i class="glyphicon glyphicon-resize-small"></i></a>
+    <a>Закрыть фильтр <i class="glyphicon glyphicon-resize-small"></i></a>
 </div>
 
 <div class="filter-form">
-    <h2>Поиск жилья</h2>
-    <form role="form" action="." method="get">{% csrf_token %}
+    <h2>Поиск жилья ({{ apartment_list|length }})</h2>
+    <form role="form" action="." method="get">
         {% form filter_form using "floppyforms/layouts/bootstrap.html" %}
         <div class="form-group">
             <button type="submit" class="btn btn-success">Найти</button>
@@ -76,49 +84,8 @@
     </div>
 </div>
 
-{#<div class="apartment-grid">#}
-{#    <div class="container">#}
-{#        <h2 style="color: #E4E6E5;">Найдено квартир ({{ apartment_list|length }})</h2>#}
-{#        {% for apartment in apartment_list %}#}
-{#        {% if forloop.counter0|divisibleby:2 %}#}
-{#        <div class="row">#}
-{#        {% endif %}#}
-{#            <div class="col-md-6">#}
-{#                <div class="panel panel-default">#}
-{#                    <div class="panel-heading">#}
-{#                        <h3 class="panel-title">{{ apartment.address }}</h3>#}
-{#                    </div>#}
-{#                    <div class="panel-body">#}
-{#                        <dl class="dl-horizontal">#}
-{#                            <dt>Район</dt>#}
-{#                            <dd>{{ apartment.district }}</dd>#}
-{#                            <dt>Комнат</dt>#}
-{#                            <dd>{{ apartment.rooms_num }}</dd>#}
-{#                            <dt>Цена за месяц</dt>#}
-{#                            <dd>{{ apartment.month_price }}</dd>#}
-{#                            <dt>Этаж</dt>#}
-{#                            <dd>{{ apartment.floor }} из {{ apartment.storeys_num }}</dd>#}
-{#                            <dt>Контактный телефон</dt>#}
-{#                            <dd>{{ apartment.phone_number }}</dd>#}
-{#                        </dl>#}
-{#                        <p>#}
-{#                            <strong>Описание: </strong>#}
-{#                            {% if apartment.description == "None" %}#}
-{#                                -#}
-{#                            {% else %}#}
-{#                                {{ apartment.description|default_if_none:"nothing" }}#}
-{#                            {% endif%}#}
-{#                        </p>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        {% if forloop.counter|divisibleby:2 %}#}
-{#        </div>#}
-{#        {% endif %}#}
-{#        {% empty %}#}
-{#            К сожалению, подходящих квартир нет...#}
-{#        {% endfor %}#}
-{#    </div>#}
-{#</div>#}
+<div id="apartment-detail">
+    <button type="button" class="close">&times;</button>
+    <div id="detail-from-balloon"></div>
 </div>
 {% endblock %}

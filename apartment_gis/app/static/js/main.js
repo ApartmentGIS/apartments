@@ -1,17 +1,4 @@
 $(function(){
-//    function checkDisabledKindergartenSlider(){
-//        if($("#kindergarten-check").is(":checked"))
-//            $("#kindergarten-slider").removeAttr("disabled");
-//        else
-//            $("#kindergarten-slider").attr("disabled", "true");
-//    };
-//
-//    checkDisabledKindergartenSlider();
-//
-//    $("#kindergarten-check").on("change", function(){
-//        checkDisabledKindergartenSlider();
-//    });
-
     $("#id_district_1, #id_rooms_num_1").on("change", function(){
         var self = $(this),
             btnGroup = self.closest(".btn-group");
@@ -42,7 +29,7 @@ $(function(){
 
     $(".toggle-filter-form").on("click", function(){
         var aClose = '<a>Закрыть фильтр <i class="glyphicon glyphicon-resize-small"></i></a>',
-            aOpen = '<a>Открыть фильтр <i class="glyphicon glyphicon-resize-small"></i></a>',
+            aOpen = '<a>Открыть фильтр <i class="glyphicon glyphicon-resize-full"></i></a>',
             filterForm = $(document).find(".filter-form");
 
         if(filterForm.is(":hidden")){
@@ -53,6 +40,10 @@ $(function(){
             filterForm.hide();
             $(this).html(aOpen);
         };
+    });
+
+    $("#apartment-detail").find(".close").on("click", function(){
+        $(this).closest("#apartment-detail").hide();
     });
 
     init();

@@ -10,16 +10,18 @@ var balloonClass = {
 };
 
 var markerClass = {
-    create: function(map, coord, balloon){
+    create: function(map, selectedBaloonsGroupName, coord, balloon, selectedText, callback){
         var marker = new DG.Markers.Common({
             geoPoint: new DG.GeoPoint(coord[0], coord[1]),
             clickCallback: function(){
-                if(!map.balloons.getDefaultGroup().contains(balloon)){
-                    map.balloons.add(balloon);
-                }
-                else{
-                    balloon.show();
-                }
+                var tempBalloon = balloonClass.create(coord, selectedText),
+                    selectedBalloonsGroup = map.balloons.getGroup(selectedBaloonsGroupName);
+
+                selectedBalloonsGroup.removeAll();
+                selectedBalloonsGroup.add(tempBalloon);
+                tempBalloon.show();
+
+                callback(balloon.getContent());
             }
          });
 
@@ -29,22 +31,21 @@ var markerClass = {
 
 var mapClass = {
     map: null,
-    create: function(selector, coord, zoom){
+    selectedBalloonsGroupName: null,
+    create: function(selector, selectedBalloonsGroupName, coord, currentZoom, minZoom){
         this.map = new DG.Map(selector);
-        this.map.setCenter(new DG.GeoPoint(coord[0], coord[1]), zoom);
+        this.map.setCenter(new DG.GeoPoint(coord[0], coord[1]), currentZoom);
+        this.map.setMinZoom(minZoom);
         this.map.controls.add(new DG.Controls.Zoom());
+
+        this.selectedBalloonsGroupName = selectedBalloonsGroupName;
+        this.map.balloons.createGroup(selectedBalloonsGroupName);
 
         return this;
     },
-    addMarker: function(marker){
-        this.map.markers.add(marker);
+    addMarkers: function(markers){
+        for(var i = 0; i < markers.length; i++){
+            this.map.markers.add(markers[i]);
+        }
     }
-}
-
-DG.autoload(function(){
-    var chellMap = mapClass.create("map", [61.400856, 55.160283], 12);
-
-    var balloon = balloonClass.create([61.438576, 55.144824], "It's work, maza fucka!");
-    var marker = markerClass.create(chellMap.map, [61.438576, 55.144824], balloon);
-    chellMap.addMarker(marker);
-});
+};
