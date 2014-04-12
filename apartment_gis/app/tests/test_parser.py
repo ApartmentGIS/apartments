@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import nose.tools as nt
-from django.utils.encoding import smart_str, smart_unicode
-import app.address_parser as AP
+from django.utils.encoding import smart_str
 from app.address_parser import AptDataParser
 import os
 from bs4 import BeautifulSoup as BS
-import  csv
+import csv
 import subprocess
+from mock import Mock
 
 class TestParams(object):
     def __init__(self):
@@ -45,6 +45,7 @@ class TestParser(object):
         self.details_correct_file = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'details_correct_fixtures.html'), 'rb')
         self.details_incorrect_file = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'details_incorrect_fixtures.html'), 'rb')
         self.apt_fixtures = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'apartments_fixtures.html'), 'rb')
+        self.apt_fixtures_no_room = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'apartments_fixtures_no_room.html'), 'rb')
 
     def test_adding_new_address(self):
         nt.assert_false(self.ADP.is_already_added(self.address))
@@ -53,13 +54,18 @@ class TestParser(object):
         self.ADP.apt_parameters_list.append([smart_str(self.address)])
         nt.assert_true(self.ADP.is_already_added(self.address))
 
+    def test_adding_different_address(self):
+        different_address = 'Цвиллинга, д. 35'
+        self.ADP.apt_parameters_list.append([smart_str(self.address)])
+        nt.assert_false(self.ADP.is_already_added(different_address))
+
     def test_getting_location(self):
         expected_coords = '61.420367 55.161203'
         nt.assert_equal(self.ADP.get_location(self.address), expected_coords)
 
     def test_getting_description(self):
         info = BS(self.details_correct_file.read())
-        expected_response = u'интернет, лоджия'
+        expected_response = smart_str('интернет, лоджия')
         nt.assert_equal(self.ADP.get_description(info), expected_response)
 
     def test_getting_no_description(self):
@@ -91,6 +97,11 @@ class TestParser(object):
         expected_price = 11000
         nt.assert_equal(self.ADP.get_price(basic_info), expected_price)
 
+    def test_getting_no_rooms_num(self):
+        info = BS(self.apt_fixtures_no_room.read())
+        basic_info = info.findAll('td', {'class': 'black'})
+        nt.assert_equal(self.ADP.get_rooms_num(basic_info), None)
+
     def test_getting_rooms_num(self):
         info = BS(self.apt_fixtures.read())
         basic_info = info.findAll('td', {'class': 'black'})
@@ -109,19 +120,23 @@ class TestParser(object):
         expected_storeys_num = 9
         nt.assert_equal(self.ADP.get_storeys_num(basic_info), expected_storeys_num)
 
+    # def test_getting_apartments_list(self):
+    #     soup_fixtures = BS(self.apt_fixtures.read())
+    #     self.ADP.parse_apt_data('even', soup_fixtures)
+    #     apt_list = self.ADP.get_apartments_list()
+    #     print 'LIIIIIST' % apt_list
+
 class TestCSV(object):
     def __init__(self):
         self.ADP = AptDataParser()
 
     def test_file_existence(self):
         target_filename = 'test_existence.csv'
-        target_filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../' + target_filename)
         self.ADP.write_in(target_filename, [])
         nt.assert_true(os.path.exists(target_filename))
 
     def test_file_empty(self):
         target_filename = 'test_empty.csv'
-        target_filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../' + target_filename)
         self.ADP.write_in(target_filename, [])
         nt.assert_equal(os.path.getsize(target_filename), 0)
 

@@ -25,7 +25,8 @@ class AptDataParser():
             for i in xrange(0, len(self.apt_parameters_list)):
                 if smart_str(address) == self.apt_parameters_list[i][0]:
                     return True
-        return False
+                else:
+                    return False
 
     def get_location(self, address):
         response = urllib.urlopen("http://geocode-maps.yandex.ru/1.x/?format=json&geocode=город Челябинск, " + smart_str(address))
@@ -59,7 +60,7 @@ class AptDataParser():
         if len(description) == 1 or len(description) == 0:
             return None
         else:
-            return description[1].li.contents[0].strip(' \t\n\r')
+            return smart_str(description[1].li.contents[0].strip(' \t\n\r'))
 
     def get_phone(self, details_soup):
         phone_number = details_soup.findAll('div', {'class': 'rl_info'})
@@ -97,7 +98,7 @@ class AptDataParser():
             description = self.get_description(details_soup)
             location = self.get_location(address)
             print address
-            self.apt_parameters_list.append([address, district, rooms_num, price, floor, storeys_num, smart_str(description), phone, location])
+            self.apt_parameters_list.append([address, district, rooms_num, price, floor, storeys_num, description, phone, location])
 
     def get_apartments_list(self):
         return self.apt_parameters_list

@@ -11,24 +11,24 @@ class Command(BaseCommand):
     help = 'Add parsed data into database'
     option_list = BaseCommand.option_list + (
         make_option(
-            "--apt_file",
-            dest = "apartment_filename",
-            help = "specify import file with apartment data",
-            metavar = "FILE"
+            "--apt_filename",
+            dest="apt_filename",
+            help="specify importing file with apartment data",
+            metavar="FILE"
         ),
     )
     option_list = option_list + (
         make_option(
-            "--school_file",
-            dest = "school_filename",
-            help = "specify import file with nursery school data",
-            metavar = "FILE"
+            "--school_filename",
+            dest="school_filename",
+            help="specify importing file with nursery school data",
+            metavar="FILE"
         ),
     )
 
     def handle(self, *args, **options):
-        if(options['apartment_filename']):
-            data_filename = os.getcwd() + '/app/'+options['apartment_filename']
+        if options['apt_filename']:
+            data_filename = os.getcwd() + '/app/'+options['apt_filename']
 
             with open(data_filename, 'rb') as csv_read:
                 read_data = csv.reader(csv_read, delimiter='#', quotechar='"')
@@ -42,11 +42,11 @@ class Command(BaseCommand):
                         storeys_num=row[5],
                         description=row[6],
                         phone_number=row[7],
-                        location= fromstr("POINT(%s)" % (row[8])))
+                        location=fromstr("POINT(%s)" % (row[8])))
                     try:
                         apt.save()
-                    except:
-                       print 'Error: This apartment is already in database'
+                    except Exception as error:
+                       print error
                        continue
             csv_read.close()
         elif(options['school_filename']):
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                         name=row[0],
                         address=row[1],
                         phone_number=row[2],
-                        location= fromstr("POINT(%s)" % (row[3])))
+                        location=fromstr("POINT(%s)" % (row[3])))
                     try:
                         ns.save()
                     except:
@@ -66,5 +66,5 @@ class Command(BaseCommand):
                         continue
             csv_read.close()
         else:
-            raise CommandError("One of the options `--apt_file=...` or `--school_file` must be specified.")
+            raise CommandError("One of the options `--apt_filename=...` or `--school_filename` must be specified.")
 
