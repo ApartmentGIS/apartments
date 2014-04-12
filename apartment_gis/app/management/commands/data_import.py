@@ -2,9 +2,10 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.gis.geos import Point, fromstr
 from optparse import make_option
-from app.models import Apartment, NurserySchool
+from app.models import Apartment, Organization
 import csv
 import os
+
 
 class Command(BaseCommand):
     args = ''
@@ -19,9 +20,9 @@ class Command(BaseCommand):
     )
     option_list = option_list + (
         make_option(
-            "--school_filename",
-            dest="school_filename",
-            help="specify importing file with nursery school data",
+            "--org_filename",
+            dest="org_filename",
+            help="specify import file with organizations data",
             metavar="FILE"
         ),
     )
@@ -46,25 +47,57 @@ class Command(BaseCommand):
                     try:
                         apt.save()
                     except Exception as error:
-                       print error
-                       continue
+                        print "ERROR: %s" % error
+                        continue
             csv_read.close()
-        elif(options['school_filename']):
-            data_filename = os.getcwd() + '/app/'+options['school_filename']
+        elif options['org_filename']:
+            data_filename = os.getcwd() + '/app/'+options['org_filename']
             with open(data_filename, 'rb') as csv_read:
                 read_data = csv.reader(csv_read, delimiter='#', quotechar='"')
                 for row in read_data:
-                    ns = NurserySchool(
-                        name=row[0],
-                        address=row[1],
-                        phone_number=row[2],
-                        location=fromstr("POINT(%s)" % (row[3])))
+                    org_type = row[0]
+                    if org_type == 'Детские сады / Ясли':
+                        org = Organization(
+                            type='KIN',
+                            name=row[1],
+                            address=row[2],
+                            location=fromstr("POINT(%s)" % (row[3])))
+                    elif org_type == 'школы':
+                        org = Organization(
+                             type='SCH',
+                             name=row[1],
+                             address=row[2],
+                             location=fromstr("POINT(%s)" % (row[3])))
+                    elif org_type == 'университеты':
+                          org = Organization(
+                              type='UNI',
+                              name=row[1],
+                              address=row[2],
+                              location=fromstr("POINT(%s)" % (row[3])))
+                    elif org_type == 'больницы':
+                        org = Organization(
+                            type='HOS',
+                            name=row[1],
+                            address=row[2],
+                            location=fromstr("POINT(%s)" % (row[3])))
+                    elif org_type == 'фитнес-клубы':
+                        org = Organization(
+                            type='FIT',
+                            name=row[1],
+                            address=row[2],
+                            location=fromstr("POINT(%s)" % (row[3])))
+                    else:
+                        org = Organization(
+                            type='SHP',
+                            name=row[1],
+                            address=row[2],
+                            location=fromstr("POINT(%s)" % (row[3])))
                     try:
-                        ns.save()
-                    except:
-                        print 'Error: This school is already in database'
+                        org.save()
+                    except Exception as error:
+                        print "ERROR: %s" % error
                         continue
-            csv_read.close()
+                csv_read.close()
         else:
-            raise CommandError("One of the options `--apt_filename=...` or `--school_filename` must be specified.")
+            raise CommandError("One of the options `--apt_filename=...` or `--org_filename` must be specified.")
 

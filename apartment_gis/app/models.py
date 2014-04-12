@@ -30,7 +30,7 @@ class Organization(models.Model):
         ('SHP', 'Shopping Mall'),
     )
     type = models.CharField(max_length=3, choices=ORG_CHOICES)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=150)
     address = models.CharField(max_length=200)
     location = models.PointField()
     objects = models.GeoManager()
