@@ -11,7 +11,7 @@ def start_test():
 
 
 def update_server():
-    project_dir = '/home/ubuntu/apartments/apartment_gis/apartment_gis'
+    project_dir = '/home/ubuntu/apartments/apartment_gis'
 
     local('rm -f /home/ubuntu/apartments/ -r')
 
@@ -21,12 +21,12 @@ def update_server():
     local('chmod a+w -R /home/ubuntu/apartments/')
 
     with lcd(project_dir):
-        local('mkdir ../logs')
-        local('ln -sf settings.py.production settings.py')
-        local('python ../manage.py clear_table_data')
-        local('python ../manage.py migrate --noinput')
-        local('python ../manage.py data_import --apt_filename=apartments.csv')
-        local('python ../manage.py data_import --org_filename=organizations.csv')
+        local('mkdir logs')
+        local('ln -sf apartment_gis/settings.py.production apartment_gis/settings.py')
+        local('python manage.py clear_table_data')
+        local('python manage.py migrate --noinput')
+        local('python manage.py data_import --apt_filename=apartments.csv')
+        local('python manage.py data_import --org_filename=organizations.csv')
         local('service postgresql restart')
         local('service nginx restart')
         local('supervisorctl restart all')
