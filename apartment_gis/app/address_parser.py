@@ -159,7 +159,6 @@ class OrganizationDataParser(AptDataParser):
                 data = json.load(json_response)
                 iter += 1
                 org_list = data['result']
-                print data['result']
                 self.parse_org_data(org_type, org_list)
                 if total_records_num < self.max_pagesize:
                     break

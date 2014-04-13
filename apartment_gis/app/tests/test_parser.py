@@ -30,22 +30,6 @@ class TestParams(object):
         p.communicate()
         nt.assert_true(p.returncode == 1)
 
-    def test_correct_apt_data_input(self):
-        subprocess.Popen(['python', self.filepath, '--apt_filename', 'app/tests/test_params.csv', '--pages_number', '1'], stdout=subprocess.PIPE)
-        time.sleep(5)
-        target_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_params.csv')
-        nt.assert_true(os.path.exists(target_filename))
-        os.remove(target_filename)
-
-    def test_correct_org_data_input(self):
-        p = subprocess.Popen(['python', self.filepath, '--org_filename', 'app/tests/test_params.csv'], stdout=subprocess.PIPE)
-        target_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_params.csv')
-        time.sleep(10)
-        p.communicate()
-        nt.assert_true(p.returncode == 0)
-        # nt.assert_true(os.path.exists(target_filename))
-        os.remove(target_filename)
-
 
 class TestHtmlResponse(object):
     def __init__(self):
@@ -57,10 +41,6 @@ class TestHtmlResponse(object):
                        'where=челябинск&page=1&pagesize=50&sort=relevance&key=ruedcr5592&version=1.3&lang=ru&' \
                        'output=json&limit=2000'
         nt.assert_equal(self.ODP.get_org_url(self.target_org, 1), expected_url)
-
-    def test_getting_total_org_num(self):
-        expected_num = 9
-        nt.assert_equal(self.ODP.get_total_num(self.target_org), expected_num)
 
 
 class TestParser(object):
@@ -147,13 +127,18 @@ class TestParser(object):
         expected_storeys_num = 9
         nt.assert_equal(self.ADP.get_storeys_num(basic_info), expected_storeys_num)
 
-    # def test_parsing_kindergardens(self):
-    #     org_type = 'Детские сады / Ясли'
-    #     data = []
-    #     with open(self.kindergarden_fixtures) as f:
-    #         for line in f:
-    #             data.append(json.loads(line))
-    #     self.ODP.parse_org_data(org_type, data)
+    def test_parsing_kindergardens(self):
+        org_type = 'Детские сады / Ясли'
+        expected_result = [
+            smart_str(org_type),
+            smart_str('Детский сад №307, Колокольчик'),
+            smart_str('Гвардейская, 10'),
+            smart_str('61.37222182939 55.144250919395')]
+        data = []
+        for line in self.kindergarden_fixtures:
+            data.append(json.loads(line))
+        self.ODP.parse_org_data(org_type, data[0]['result'])
+        nt.assert_equal(self.ODP.organizations_parameters_list[0], expected_result)
 
 
 class TestCSV(object):
