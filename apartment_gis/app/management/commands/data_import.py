@@ -29,8 +29,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['apt_filename']:
-            Apartment.objects.all().delete()
-
             data_filename = os.getcwd() + '/app/'+options['apt_filename']
 
             with open(data_filename, 'rb') as csv_read:
@@ -53,8 +51,6 @@ class Command(BaseCommand):
                         continue
             csv_read.close()
         elif options['org_filename']:
-            Organization.objects.all().delete()
-
             data_filename = os.getcwd() + '/app/'+options['org_filename']
             with open(data_filename, 'rb') as csv_read:
                 read_data = csv.reader(csv_read, delimiter='#', quotechar='"')
