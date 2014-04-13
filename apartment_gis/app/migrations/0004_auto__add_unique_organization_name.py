@@ -4,15 +4,18 @@ from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Changing field 'Organization.name'
-        db.alter_column(u'app_organization', 'name', self.gf('django.db.models.fields.CharField')(max_length=150))
+        # Adding unique constraint on 'Organization', fields ['name']
+        db.create_unique(u'app_organization', ['name'])
+
 
     def backwards(self, orm):
-        # Changing field 'Organization.name'
-        db.alter_column(u'app_organization', 'name', self.gf('django.db.models.fields.CharField')(max_length=100))
+        # Removing unique constraint on 'Organization', fields ['name']
+        db.delete_unique(u'app_organization', ['name'])
+
 
     models = {
         u'app.apartment': {
@@ -33,7 +36,7 @@ class Migration(SchemaMigration):
             'address': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'location': ('django.contrib.gis.db.models.fields.PointField', [], {}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '150'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '150'}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '3'})
         }
     }

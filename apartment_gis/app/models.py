@@ -35,5 +35,8 @@ class Organization(models.Model):
     location = models.PointField()
     objects = models.GeoManager()
 
+    class Meta:
+        unique_together = ('name', 'address', 'location')
+
     def __unicode__(self):
         return self.name

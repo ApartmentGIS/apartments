@@ -4,15 +4,24 @@ from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Changing field 'Organization.name'
-        db.alter_column(u'app_organization', 'name', self.gf('django.db.models.fields.CharField')(max_length=150))
+        # Removing unique constraint on 'Organization', fields ['name']
+        db.delete_unique(u'app_organization', ['name'])
+
+        # Adding unique constraint on 'Organization', fields ['location', 'name', 'address']
+        db.create_unique(u'app_organization', ['location', 'name', 'address'])
+
 
     def backwards(self, orm):
-        # Changing field 'Organization.name'
-        db.alter_column(u'app_organization', 'name', self.gf('django.db.models.fields.CharField')(max_length=100))
+        # Removing unique constraint on 'Organization', fields ['location', 'name', 'address']
+        db.delete_unique(u'app_organization', ['location', 'name', 'address'])
+
+        # Adding unique constraint on 'Organization', fields ['name']
+        db.create_unique(u'app_organization', ['name'])
+
 
     models = {
         u'app.apartment': {
@@ -29,7 +38,7 @@ class Migration(SchemaMigration):
             'storeys_num': ('django.db.models.fields.IntegerField', [], {})
         },
         u'app.organization': {
-            'Meta': {'object_name': 'Organization'},
+            'Meta': {'unique_together': "(('name', 'address', 'location'),)", 'object_name': 'Organization'},
             'address': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'location': ('django.contrib.gis.db.models.fields.PointField', [], {}),
