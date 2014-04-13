@@ -1,13 +1,11 @@
 {% load floppyforms %}{% block row %}{% for field in fields %}
-<div class="form-group{% if field.errors %} error{% endif %}">
+<div class="form-group{% if field.errors %} error{% endif %} {% if not field.label %}empty-label{% endif%}">
     {% with classes=field.css_classes label=label|default:field.label help_text=help_text|default:field.help_text %}
     {% block label %}
-        {% if checkbox %}<div class="checkbox">{% endif %}
         {% if field|id %}
-            <label for="{{ field|id }}">{% endif %}{{ label }}{% if field|id %}
-            {% if checkbox %}<input type="checkbox" id="kindergarten-check">{% endif %}
-            </label>
-        {% endif %}
+            {% if label %}
+                <label for="{{ field|id }}">{% endif %}{{ label }}</label>
+            {% endif %}
         {% if checkbox %}</div>{% endif %}
     {% endblock %}
     {% block field %}
