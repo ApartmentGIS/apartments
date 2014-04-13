@@ -1,12 +1,5 @@
-{% if attrs.checkbox %}
-<div class="checkbox">
-    <label>
-        <input type="checkbox" id="kindergarten-check"> Детский сад
-    </label>
-</div>
-{% endif %}
-<div id="{{ attrs.id }}-slider"></div>
-<p class="{{ attrs.id }}-container">в пределах <span id="{{ attrs.id }}-to"></span> {{ attrs.measure }}</p>
+<div id="{{ attrs.id }}-slider" class="organization-slider"></div>
+<p class="organization-container" class="organization-label">в пределах <span id="{{ attrs.id }}-to" class="organization-to"></span> {{ attrs.measure }}</p>
 <input type="hidden" name="{{ name }}" id="{{ attrs.id }}-invisible" value="{{ value }}">
 
 <script>

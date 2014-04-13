@@ -40,16 +40,16 @@ body {
     text-decoration: none;
 }
 
-#price-max-slider, #kindergarten-slider {
+#price-max-slider, .organization-slider {
     width: 300px;
     margin-top: 5px;
 }
 
-.price-max-container, #kindergarten-container {
+.price-max-container, .organization-container {
     margin-top: 5px;
 }
 
-#price-max, #kindergarten-to {
+#price-max, #organization-to {
     font-weight: bold;
 }
 

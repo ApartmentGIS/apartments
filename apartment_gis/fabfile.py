@@ -23,7 +23,7 @@ def update_server():
     with lcd(project_dir):
         local('mkdir ../logs')
         local('ln -sf settings.py.production settings.py')
-        local('python ../manage.py migrate app')
+        local('python ../manage.py migrate --noinput')
         local('service postgresql restart')
         local('service nginx restart')
         local('supervisorctl restart all')
