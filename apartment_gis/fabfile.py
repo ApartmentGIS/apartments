@@ -1,5 +1,5 @@
 from fabric.api import *
-from app.models import Apartment, Organization
+
 
 def prepare_test_instance():
     local('ln -sf settings.py.production settings.py')
@@ -23,6 +23,7 @@ def update_server():
     with lcd(project_dir):
         local('mkdir ../logs')
         local('ln -sf settings.py.production settings.py')
+        local('python ../manage.py clear_table_data')
         local('python ../manage.py migrate --noinput')
         local('python ../manage.py data_import --apt_filename=apartments.csv')
         local('python ../manage.py data_import --org_filename=organizations.csv')
