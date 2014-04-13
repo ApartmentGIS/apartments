@@ -1,12 +1,12 @@
 from fabric.api import *
-
+from app.models import Apartment, Organization
 
 def prepare_test_instance():
     local('ln -sf settings.py.production settings.py')
 
 
 def start_test():
-    local('coverage run --source="." manage.py test --noinput')
+    local('coverage run --source="." manage.py test --exe --noinput')
     local('coverage html')
 
 
@@ -24,6 +24,8 @@ def update_server():
         local('mkdir ../logs')
         local('ln -sf settings.py.production settings.py')
         local('python ../manage.py migrate --noinput')
+        local('python ../manage.py data_import --apt_filename=apartments.csv')
+        local('python ../manage.py data_import --org_filename=organizations.csv')
         local('service postgresql restart')
         local('service nginx restart')
         local('supervisorctl restart all')
