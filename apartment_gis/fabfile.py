@@ -22,7 +22,7 @@ def update_server():
 
     with lcd(project_dir):
         local('mkdir logs')
-        local('ln -sf apartment_gis/settings.py.production apartment_gis/settings.py')
+        local('ln -sf /home/ubuntu/apartments/apartment_gis/apartment_gis/settings.py.production apartment_gis/settings.py')
         local('python manage.py clear_table_data')
         local('python manage.py migrate --noinput')
         local('python manage.py data_import --apt_filename=apartments.csv')
