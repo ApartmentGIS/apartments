@@ -48,11 +48,11 @@ class TestParser(object):
         self.ADP = AptDataParser()
         self.ODP = OrganizationDataParser()
         self.address = 'Ленина пр-кт, д. 34'
-        self.details_correct_file = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'details_correct_fixtures.html'), 'rb')
-        self.details_incorrect_file = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'details_incorrect_fixtures.html'), 'rb')
-        self.apt_fixtures = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'apartments_fixtures.html'), 'rb')
-        self.apt_fixtures_no_room = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'apartments_fixtures_no_room.html'), 'rb')
-        self.kindergarden_fixtures = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'kindergarden_test_data.json'), 'rb')
+        self.details_correct_file = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data_for_tests/details_correct_fixtures.html'), 'rb')
+        self.details_incorrect_file = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data_for_tests/details_incorrect_fixtures.html'), 'rb')
+        self.apt_fixtures = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data_for_tests/apartments_fixtures.html'), 'rb')
+        self.apt_fixtures_no_room = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data_for_tests/apartments_fixtures_no_room.html'), 'rb')
+        self.kindergarden_fixtures = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data_for_tests/kindergarden_test_data.json'), 'rb')
 
     def test_adding_new_address(self):
         nt.assert_false(self.ADP.is_already_added(self.address))
@@ -146,17 +146,19 @@ class TestCSV(object):
         self.ADP = AptDataParser()
 
     def test_file_existence(self):
-        target_filename = 'test_existence.csv'
+        target_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data_for_tests/test_existence.csv')
         self.ADP.write_in(target_filename, [])
         nt.assert_true(os.path.exists(target_filename))
+        os.remove(target_filename)
 
     def test_file_empty(self):
-        target_filename = 'test_empty.csv'
+        target_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data_for_tests/test_empty.csv')
         self.ADP.write_in(target_filename, [])
         nt.assert_equal(os.path.getsize(target_filename), 0)
+        os.remove(target_filename)
 
     def test_writing_in_csv(self):
-        target_filename = 'test_writing.csv'
+        target_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data_for_tests/test_writing.csv')
         expected_row = '1#2#3#4'
         self.ADP.write_in(target_filename, [[1, 2, 3, 4]])
         csvfile = open(target_filename)
@@ -164,6 +166,7 @@ class TestCSV(object):
         for row in reader:
             response = row
         nt.assert_equal(response[0], expected_row)
+        os.remove(target_filename)
 
 
 
