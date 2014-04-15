@@ -33,22 +33,18 @@ class ApartmentsFilter():
             'district': ['all'],
             'rooms_num': ['all'],
             'month_price': 50000,
-            # 'kindergarten_checkbox': '',
             'kindergarten_distance': 3000,
-            # 'school_checkbox': '',
             'school_distance': 3000,
-            # 'university_checkbox': '',
             'university_distance': 3000,
-            # 'hospital_checkbox': '',
             'hospital_distance': 3000,
-            # 'fitnessclub_checkbox': '',
             'fitnessclub_distance': 3000,
-            # 'shopmall_checkbox': '',
             'shopmall_distance': 3000
         }
         self.request_params = request_params
         self.check_organizations = []
         self.apartment_list = []
+        self.prepare_near_organizations = {}
+        self.near_organizations = {}
 
     def get_filter(self):
         return self.filter
@@ -100,16 +96,36 @@ class ApartmentsFilter():
 
         for organization in self.check_organizations:
             apartment_list_for_organization = []
+            typed_near_organizations = []
 
             for department in Organization.objects.filter(type=organization[1]):
                 appropriate_variants = apartment_list.filter(location__distance_lte=(department.location, D(m=self.filter[organization[0] + '_distance'])))
                 if len(appropriate_variants) != 0:
                     apartment_list_for_organization = set(apartment_list_for_organization) | set(appropriate_variants)
+                    typed_near_organizations.append(department)
 
             apartment_list_with_organizations = set(apartment_list_with_organizations) & set(apartment_list_for_organization)
+            self.prepare_near_organizations[organization[1]] = typed_near_organizations
 
-        return list(apartment_list_with_organizations)
+        self.apartment_list = list(apartment_list_with_organizations)
 
+        return self.apartment_list
+
+    def get_near_organizations(self):
+        apartment_id_list = [apartment.id for apartment in self.apartment_list]
+        apartment_queryset = Apartment.objects.filter(id__in=apartment_id_list)
+
+        for organization in self.check_organizations:
+            typed_near_organizations = []
+
+            for department in self.prepare_near_organizations[organization[1]]:
+                appropriate_variants = apartment_queryset.filter(location__distance_lte=(department.location, D(m=self.filter[organization[0] + '_distance'])))
+                if len(appropriate_variants) != 0:
+                    typed_near_organizations.append(department)
+
+            self.near_organizations[organization[1]] = typed_near_organizations
+
+        return self.near_organizations
 
 
 def home(request):
@@ -118,10 +134,12 @@ def home(request):
         apartmentsFilter.update_filter_from_request()
 
         apartment_list = apartmentsFilter.get_filtered_by_organizations()
+        organizations = apartmentsFilter.get_near_organizations()
 
         filter_form = FilterForm(apartmentsFilter.get_filter())
 
         return render(request, 'index.html', {
             'apartment_list': apartment_list,
+            'organizations': organizations,
             'filter_form': filter_form
         })

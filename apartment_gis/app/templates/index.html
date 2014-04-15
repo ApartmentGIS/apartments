@@ -11,10 +11,10 @@
 {%  endblock %}
 
 {% block js %}
-<script src="{% static "js/jquery.nouislider.min.js" %}"></script>
-<script src="{% static "js/main.js" %}"></script>
+<script src="{% static 'js/jquery.nouislider.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
 <script src="http://maps.api.2gis.ru/1.0"></script>
-<script src="{% static "js/map-controller.js" %}"></script>
+<script src="{% static 'js/map-controller.js' %}"></script>
 <script>
     DG.autoload(function(){
         var chelCoord = [61.400856, 55.160283],
@@ -44,8 +44,20 @@
                 },
                 {% endfor %}
             ],
+            organizations = [
+                {% for type, departments in organizations.items %}
+                    {% for department in departments %}
+                        {
+                            type: "{{ type }}",
+                            coords: [{{ department.location.x}}, {{ department.location.y }}],
+                            name: "{{ department.name }}"
+                        },
+                    {% endfor %}
+                {% endfor %}
+            ],
             balloon,
-            markers = [];
+            apt_markers = [],
+            org_markers = [];
 
         var showApartmentDetail = function(detail){
             $("#detail-from-balloon").html(detail).closest("#apartment-detail").show();
@@ -53,10 +65,35 @@
 
         for(var i = 0; i < apartments.length; i++){
             balloon = balloonClass.create(apartments[i].coords, apartments[i].text);
-            markers.push(markerClass.create(chellMap.map, chellMap.selectedBalloonsGroupName, apartments[i].coords, balloon, selectedText, showApartmentDetail));
+            apt_markers.push(markerClass.create(chellMap.map, chellMap.selectedBalloonsGroupName, apartments[i].coords, balloon, selectedText, showApartmentDetail));
         }
 
-        chellMap.addMarkers(markers);
+        chellMap.addMarkers(apt_markers);
+
+        var marker, icon;
+
+        for(var i = 0; i < organizations.length; i++){
+            switch(organizations[i].type){
+                case "KIN": icon = "{% static 'img/markers/pink.png' %}"; break;
+                case "SCH": icon = "{% static 'img/markers/blue.png' %}"; break;
+                case "UNI": icon = "{% static 'img/markers/ocean.png' %}"; break;
+                case "HOS": icon = "{% static 'img/markers/red.png' %}"; break;
+                case "FIT": icon = "{% static 'img/markers/green.png' %}"; break;
+                case "SHP": icon = "{% static 'img/markers/gray.png' %}"; break;
+            };
+
+            marker = new DG.Markers.MarkerWithBalloon({
+                geoPoint: new DG.GeoPoint(organizations[i].coords[0], organizations[i].coords[1]),
+                icon: new DG.Icon(icon, new DG.Size(20, 21)),
+                balloonOptions: {
+                    contentHtml: organizations[i].name,
+                    maxContentWidth: 300
+                }
+            });
+            org_markers.push(marker);
+        }
+
+        chellMap.addMarkers(org_markers);
     });
 </script>
 {%  endblock %}
