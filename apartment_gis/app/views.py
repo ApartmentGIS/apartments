@@ -130,13 +130,13 @@ class ApartmentsFilter():
 
 def home(request):
     if request.method == 'GET':
-        apartmentsFilter = ApartmentsFilter(request.GET)
-        apartmentsFilter.update_filter_from_request()
+        apartments_filter = ApartmentsFilter(request.GET)
+        apartments_filter.update_filter_from_request()
 
-        apartment_list = apartmentsFilter.get_filtered_by_organizations()
-        organizations = apartmentsFilter.get_near_organizations()
+        apartment_list = apartments_filter.get_filtered_by_organizations()
+        organizations = apartments_filter.get_near_organizations()
 
-        filter_form = FilterForm(apartmentsFilter.get_filter())
+        filter_form = FilterForm(apartments_filter.get_filter())
 
         return render(request, 'index.html', {
             'apartment_list': apartment_list,
