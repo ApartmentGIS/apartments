@@ -93,3 +93,8 @@ body {
     padding: 20px;
     display: none;
 }
+
+.marker-icon img {
+    width: 18px;
+    height: 18px;
+}

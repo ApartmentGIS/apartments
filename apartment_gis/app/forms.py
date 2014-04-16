@@ -54,7 +54,7 @@ class FilterForm(forms.Form):
         'step': 1000,
         'measure': u'рублей'
     }))
-    fitnessclub_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Фитнес центр'}), required=False)
+    fitnessclub_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Фитнес центр', 'marker_icon': 'green.png'}), required=False)
     fitnessclub_distance = forms.IntegerField(label='', widget=CustomRangeInput(attrs={
         'id': 'fitnessclub',
         'min': 300,
@@ -62,7 +62,7 @@ class FilterForm(forms.Form):
         'step': 100,
         'measure': u'метров'
     }))
-    hospital_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Больница'}), required=False)
+    hospital_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Больница', 'marker_icon': 'red.png'}), required=False)
     hospital_distance = forms.IntegerField(label='', widget=CustomRangeInput(attrs={
         'id': 'hospital',
         'min': 300,
@@ -70,7 +70,7 @@ class FilterForm(forms.Form):
         'step': 100,
         'measure': u'метров'
     }))
-    kindergarten_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Детский сад'}), required=False)
+    kindergarten_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Детский сад', 'marker_icon': 'pink.png'}), required=False)
     kindergarten_distance = forms.IntegerField(label='', widget=CustomRangeInput(attrs={
         'id': 'kindergarten',
         'min': 300,
@@ -78,7 +78,7 @@ class FilterForm(forms.Form):
         'step': 100,
         'measure': u'метров'
     }))
-    school_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Школа'}), required=False)
+    school_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Школа', 'marker_icon': 'blue.png'}), required=False)
     school_distance = forms.IntegerField(label='', widget=CustomRangeInput(attrs={
         'id': 'school',
         'min': 300,
@@ -86,7 +86,7 @@ class FilterForm(forms.Form):
         'step': 100,
         'measure': u'метров'
     }))
-    university_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Университет'}), required=False)
+    university_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Университет', 'marker_icon': 'ocean.png'}), required=False)
     university_distance = forms.IntegerField(label='', widget=CustomRangeInput(attrs={
         'id': 'university',
         'min': 300,
@@ -94,7 +94,7 @@ class FilterForm(forms.Form):
         'step': 100,
         'measure': u'метров'
     }))
-    shopmall_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Торговый центр'}), required=False)
+    shopmall_checkbox = forms.BooleanField(label='', widget=LabelCheckbox(attrs={'label': u'Торговый центр', 'marker_icon': 'black.png'}), required=False)
     shopmall_distance = forms.IntegerField(label='', widget=CustomRangeInput(attrs={
         'id': 'shopmall',
         'min': 300,

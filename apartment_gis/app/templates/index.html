@@ -59,6 +59,31 @@
             apt_markers = [],
             org_markers = [];
 
+        var marker, icon;
+
+        for(var i = 0; i < organizations.length; i++){
+            switch(organizations[i].type){
+                case "KIN": icon = "{% static 'img/dot-markers/pink.png' %}"; break;
+                case "SCH": icon = "{% static 'img/dot-markers/blue.png' %}"; break;
+                case "UNI": icon = "{% static 'img/dot-markers/ocean.png' %}"; break;
+                case "HOS": icon = "{% static 'img/dot-markers/red.png' %}"; break;
+                case "FIT": icon = "{% static 'img/dot-markers/green.png' %}"; break;
+                case "SHP": icon = "{% static 'img/dot-markers/black.png' %}"; break;
+            };
+
+            marker = new DG.Markers.MarkerWithBalloon({
+                geoPoint: new DG.GeoPoint(organizations[i].coords[0], organizations[i].coords[1]),
+                icon: new DG.Icon(icon, new DG.Size(10, 10)),
+                balloonOptions: {
+                    contentHtml: organizations[i].name,
+                    maxContentWidth: 300
+                }
+            });
+            org_markers.push(marker);
+        }
+
+        chellMap.addMarkers(org_markers);
+
         var showApartmentDetail = function(detail){
             $("#detail-from-balloon").html(detail).closest("#apartment-detail").show();
         };
@@ -69,31 +94,6 @@
         }
 
         chellMap.addMarkers(apt_markers);
-
-        var marker, icon;
-
-        for(var i = 0; i < organizations.length; i++){
-            switch(organizations[i].type){
-                case "KIN": icon = "{% static 'img/markers/pink.png' %}"; break;
-                case "SCH": icon = "{% static 'img/markers/blue.png' %}"; break;
-                case "UNI": icon = "{% static 'img/markers/ocean.png' %}"; break;
-                case "HOS": icon = "{% static 'img/markers/red.png' %}"; break;
-                case "FIT": icon = "{% static 'img/markers/green.png' %}"; break;
-                case "SHP": icon = "{% static 'img/markers/gray.png' %}"; break;
-            };
-
-            marker = new DG.Markers.MarkerWithBalloon({
-                geoPoint: new DG.GeoPoint(organizations[i].coords[0], organizations[i].coords[1]),
-                icon: new DG.Icon(icon, new DG.Size(20, 21)),
-                balloonOptions: {
-                    contentHtml: organizations[i].name,
-                    maxContentWidth: 300
-                }
-            });
-            org_markers.push(marker);
-        }
-
-        chellMap.addMarkers(org_markers);
     });
 </script>
 {%  endblock %}

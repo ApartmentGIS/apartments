@@ -1,4 +1,7 @@
 <label>
+    <span class="marker-icon">
+        <img src="static/img/dot-markers/{{ attrs.marker_icon }}" />
+    </span>
     {{ attrs.label }}
     <input class="label-checkbox" type="{{ type }}" name="{{ name }}"{% if value %} value="{{ value }}" checked{% endif %}{% if required %} required{% endif %}>
 </label>
